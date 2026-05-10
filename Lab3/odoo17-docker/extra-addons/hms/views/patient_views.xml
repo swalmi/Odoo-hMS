@@ -1,15 +1,23 @@
 <odoo>
-    <record id="view_patient_form" model="ir.ui.view">
+    <record id="view_patient_form_v2" model="ir.ui.view">
         <field name="name">hms.patient.form</field>
         <field name="model">hms.patient</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
                 <sheet>
-
                     <group>
                         <field name="first_name"/>
                         <field name="last_name"/>
-                        <field name="age"/>
+                        <label for="birth_date" string="Age / Date of Birth"/>
+                        <div class="o_row">
+                            <field name="birth_date" placeholder="Pick Date of Birth"/>
+                            <span class="oe_inline"> (Age: </span>
+                            <field name="age" readonly="1" class="oe_inline"/>
+                            <span class="oe_inline">)</span>
+                        </div>
 
                         <field name="department_id"
                                domain="[('is_opened','=',True)]"/>
@@ -22,10 +30,7 @@
                     </group>
 
                     <group>
-                        <field name="state"/>
-
-                        <field name="doctor_ids"
-                               widget="many2many_tags"
+                        <field name="doctor_id"
                                readonly="not is_department_selected"/>
                     </group>
 
@@ -40,6 +45,11 @@
                     </group>
 
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>

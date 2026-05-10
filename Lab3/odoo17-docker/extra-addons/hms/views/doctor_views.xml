@@ -22,8 +22,18 @@
                         <field name="first_name"/>
                         <field name="last_name"/>
                         <field name="department_id"/>
-                        <field name="patient_ids" widget="many2many_tags"/>
                     </group>
+                    <notebook>
+                        <page string="Patients">
+                            <field name="patient_ids" readonly="1">
+                                <tree>
+                                    <field name="first_name"/>
+                                    <field name="last_name"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

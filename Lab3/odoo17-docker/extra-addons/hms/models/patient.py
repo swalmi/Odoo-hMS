@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 
 class HmsPatient(models.Model):
     _name = 'hms.patient'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Hospital Patient'
 
     first_name = fields.Char(required=True)
@@ -32,10 +33,11 @@ class HmsPatient(models.Model):
         ('good', 'Good'),
         ('fair', 'Fair'),
         ('serious', 'Serious')
-    ], default='undetermined')
+    ], default='undetermined', tracking=True)
 
     department_id = fields.Many2one('hms.department')
-    doctor_ids = fields.Many2many('hms.doctor', string="Doctors")
+    doctor_id = fields.Many2one('hms.doctor', string="Doctor", ondelete='restrict')
+
 
     department_capacity = fields.Integer(
         related='department_id.capacity',
@@ -59,13 +61,11 @@ class HmsPatient(models.Model):
     def _compute_age(self):
         for rec in self:
             if rec.birth_date:
-                rec.age = date.today().year - rec.birth_date.year
+                today = date.today()
+                rec.age = today.year - rec.birth_date.year - ((today.month, today.day) < (rec.birth_date.month, rec.birth_date.day))
             else:
                 rec.age = 0
 
-    # =====================
-    # RULES
-    # =====================
     @api.constrains('department_id')
     def _check_department(self):
         for rec in self:
